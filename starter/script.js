@@ -151,6 +151,29 @@ const getCountryDataPromise2 = function (country) {
     .finally(() => (countriesContainer.style.opacity = 1));
 };
 
+const get3countries = async function (c1, c2, c3) {
+  try {
+    const country1 = await getJSON(
+      // `https://restcountries.eu/rest/v2/name/${c1}`
+      `https://restcountries.com/v3.1/name/${c1}`
+    );
+    const country2 = await getJSON(
+      // `https://restcountries.eu/rest/v2/name/${c2}`
+      `https://restcountries.com/v3.1/name/${c2}`
+    );
+    const country3 = await getJSON(
+      // `https://restcountries.eu/rest/v2/name/${c3}`
+
+      `https://restcountries.com/v3.1/name/${c3}`
+    );
+
+    console.log(`The returned country data from the three countries are: `);
+    console.log([country1, country2, country3]);
+  } catch (err) {
+    console.error(err);
+  }
+};
+get3countries(`nigeira`, `ghana`, `portugal`);
 btn.addEventListener(`click`, function () {
   getCountryDataPromise2(`czech`);
 });
