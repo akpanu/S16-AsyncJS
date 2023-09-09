@@ -1,0 +1,7 @@
+Countries API: https://countries-api-836d.onrender.com/countries/
+
+https://restcountries.eu/rest/v2/name/portugal
+
+
+New current API:
+`https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}`
