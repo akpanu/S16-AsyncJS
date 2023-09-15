@@ -80,7 +80,7 @@ const whereAmI = function () {
     .catch(err => console.log(err.message))
     .finally(() => (countriesContainer.style.opacity = 1));
 };
-whereAmI();
+// whereAmI();
 // whereAmI(52.508, 13.381);
 // whereAmI(19.037, 72.873);
 // whereAmI(-33.933, 18.474);
@@ -133,24 +133,24 @@ const createImage = function (imgPath) {
 const path = `img/img-1.jpg`;
 const path2 = `img/img-2.jpg`;
 
-let currentImg;
-createImage(path)
-  .then(img => {
-    currentImg = img;
-    console.log(`Image 1 loaded`);
-    return wait2(2);
-  })
-  .then(() => {
-    currentImg.style.display = `none`;
-    return createImage(path2);
-  })
-  .then(img => {
-    currentImg = img;
-    console.log(`Image 2 loaded`);
-    return wait2(2);
-  })
-  .then(() => (currentImg.style.display = `none`))
-  .catch(err => console.error(err));
+// let currentImg;
+// createImage(path)
+//   .then(img => {
+//     currentImg = img;
+//     console.log(`Image 1 loaded`);
+//     return wait2(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = `none`;
+//     return createImage(path2);
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log(`Image 2 loaded`);
+//     return wait2(2);
+//   })
+//   .then(() => (currentImg.style.display = `none`))
+//   .catch(err => console.error(err));
 
 // Reimplementing whereAmI function using async...await fxnality
 const whereAmI_2 = async function () {
@@ -197,7 +197,7 @@ const whereAmI_2 = async function () {
     throw err;
   }
 };
-whereAmI_2();
+// whereAmI_2();
 console.log(`1: FIRST STATEMENT EXECUTED`);
 
 // Returning a value from the async function
@@ -207,14 +207,65 @@ console.log(`1: FIRST STATEMENT EXECUTED`);
 //   .then(location => console.log(`2: ${location}`))
 //   .catch(err => console.log(`2: ${err.message}`))
 //   .finally(() => console.log(`4: Finished getting location`));
-(async function () {
-  try {
-    const city = await whereAmI_2();
-    console.log(`2: ${city}`);
-  } catch (err) {
-    console.log(`2: ${err.message}`);
-  }
-  console.log(`4: Finished getting location`);
-})();
+// (async function () {
+//   try {
+//     const city = await whereAmI_2();
+//     console.log(`2: ${city}`);
+//   } catch (err) {
+//     console.log(`2: ${err.message}`);
+//   }
+//   console.log(`4: Finished getting location`);
+// })();
 
 console.log(`3: LAST STATEMENT EXECUTED`);
+
+// Coding challenge 2
+// Write an async function 'loadNPause' that recreates Challenge #2, this time
+// using async/await (only the part where the promise is consumed, reuse the
+// 'createImage' function from before)
+
+let currentImg2;
+const path3 = `img/img-1.jpg`;
+const path4 = `img/img-2.jpg`;
+
+const loadNPause = async function () {
+  try {
+    const image1 = await createImage(path3);
+    currentImg2 = image1;
+    console.log(`Image 3 loaded from loadNPause`);
+    await wait2(2);
+    currentImg2.style.display = `none`;
+
+    const image2 = await createImage(path4);
+    currentImg2 = image2;
+    console.log(`Image 4 loaded from loadNPause`);
+    await wait2(2);
+    currentImg2.style.display = `none`;
+  } catch (err) {
+    console.error(`💥${err}`);
+  }
+};
+// loadNPause();
+
+// PART 2
+// 1. Create an async function 'loadAll' that receives an array of image paths
+// 'imgArr'
+// 2. Use .map to loop over the array, to load all the images with the
+// 'createImage' function (call the resulting array 'imgs')
+// 3. Check out the 'imgs' array in the console! Is it like you expected?
+// 4. Use a promise combinator function to actually get the images from the array 😉
+// 5. Add the 'parallel' class to all the images (it has some CSS styles)
+const imageArray = ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg'];
+const loadAll = async function (imgArr) {
+  try {
+    const imgs = imgArr.map(async img => await createImage(img));
+    console.log(imgs);
+
+    const imgEl = await Promise.all(imgs);
+    imgEl.forEach(img => img.classList.add(`parallel`));
+    console.log(imgEl);
+  } catch (err) {
+    console.error(err);
+  }
+};
+loadAll(imageArray);

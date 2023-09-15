@@ -153,27 +153,94 @@ const getCountryDataPromise2 = function (country) {
 
 const get3countries = async function (c1, c2, c3) {
   try {
-    const country1 = await getJSON(
+    const [country1] = await getJSON(
       // `https://restcountries.eu/rest/v2/name/${c1}`
       `https://restcountries.com/v3.1/name/${c1}`
     );
-    const country2 = await getJSON(
-      // `https://restcountries.eu/rest/v2/name/${c2}`
-      `https://restcountries.com/v3.1/name/${c2}`
-    );
-    const country3 = await getJSON(
-      // `https://restcountries.eu/rest/v2/name/${c3}`
+    // const [country2] = await getJSON(
+    //   // `https://restcountries.eu/rest/v2/name/${c2}`
+    //   `https://restcountries.com/v3.1/name/${c2}`
+    // );
+    // const [country3] = await getJSON(
+    //   // `https://restcountries.eu/rest/v2/name/${c3}`
+    //   `https://restcountries.com/v3.1/name/${c3}`
+    // );
 
-      `https://restcountries.com/v3.1/name/${c3}`
-    );
+    // console.log(`The returned country data from the three countries are: `);
+    // console.log([
+    //   ...country1.capital,
+    //   ...country2.capital,
+    //   ...country3.capital,
+    // ]);
 
-    console.log(`The returned country data from the three countries are: `);
-    console.log([country1, country2, country3]);
+    // optimizing the above code block using Promise.all
+
+    // running multiple promises in parallel
+    // preventing blocking of one call by another
+    const countries = await Promise.all([
+      getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+    ]);
+    console.log(`The optimized country data are: `);
+    console.log(countries.map(country => country[0].capital[0]));
   } catch (err) {
     console.error(err);
   }
 };
-get3countries(`nigeira`, `ghana`, `portugal`);
+get3countries(`nigeria`, `czech`, `usa`);
 btn.addEventListener(`click`, function () {
   getCountryDataPromise2(`czech`);
 });
+
+const timeout = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error(`Request took too long..Pls try again`));
+    }, sec * 1000);
+  });
+};
+
+Promise.race([
+  getJSON(`https://restcountries.com/v3.1/name/tanzania`),
+  timeout(1),
+])
+  .then(response => {
+    console.log(`Timeout promise:...`);
+    console.log(response[0]);
+  })
+  .catch(err => console.error(err.message));
+
+// Promise.allSettled
+Promise.allSettled([
+  Promise.resolve(`SUCCESSFUL`),
+  Promise.reject(`I CANNOT BE REJECTED... never`),
+  Promise.resolve(`MORE SUCCESSFUL`),
+]).then(response => {
+  console.log(`Demonstrating Promise.all`);
+  console.log(response);
+});
+
+// Promise.all
+Promise.all([
+  Promise.resolve(`SUCCESSFUL`),
+  Promise.reject(`I CANNOT BE REJECTED... never..from Promise.all`),
+  Promise.resolve(`MORE SUCCESSFUL`),
+])
+  .then(response => {
+    console.log(`Demonstrating Promise.all`);
+    console.log(response);
+  })
+  .catch(err => console.error(err));
+
+// Promise.any
+Promise.any([
+  Promise.resolve(`SUCCESSFUL-promise.any`),
+  Promise.reject(`I CANNOT BE REJECTED... never..from Promise.any`),
+  Promise.resolve(`MORE SUCCESSFUL-promise.any`),
+])
+  .then(response => {
+    console.log(`Demonstrating Promise.all`);
+    console.log(response);
+  })
+  .catch(err => console.error(err));
